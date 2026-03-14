@@ -95,7 +95,7 @@ const Banner = () => {
               ].map((tag, index) => (
                 <span key={tag} className='text-base text-[#202430] font-extralight'>
                   {tag}
-                  {index == 3 ? "" : ","}
+                  {index == 3 ? "" : " ,"}
                 </span>
               ))}
             </div>
