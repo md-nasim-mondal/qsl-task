@@ -1,3 +1,6 @@
+"use client"
+import Image from "next/image";
+import logo from "../../../../../public/assets/logo/frame_3.png";
 const footerLinks = {
   About: ["Our Story", "Find a Job", "Pricing", "Blog", "Privacy Policy"],
   Resources: ["Podcasts", "Events", "Blog", "Updates", "Contact us"],
@@ -11,9 +14,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="sm:col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">Q</span>
-              </div>
+              <Image src={logo} alt='Logo' width={32} height={32} />
               <span className="text-white font-bold text-lg">QuickHire</span>
             </div>
             <p className="text-sm leading-relaxed text-gray-500 max-w-xs">

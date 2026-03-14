@@ -8,7 +8,7 @@ const PostJobs = () => {
   return (
     <section className='w-full bg-white'>
       <Container>
-        <div className='px-2 py-24 md:p-18 md:pb-0 bg-indigo-600 overflow-hidden flex flex-col md:flex-row items-center'>
+        <div className='px-2 py-24 md:p-18 md:pb-0 bg-[[#4640DE] overflow-hidden flex flex-col md:flex-row items-center'>
           {/* Left Text */}
           <div className='flex-1 flex flex-col justify-end'>
             <h2 className='text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-snug mb-3'>
