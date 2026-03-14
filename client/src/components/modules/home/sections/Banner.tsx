@@ -85,18 +85,17 @@ const Banner = () => {
             </div>
 
             {/* Tags */}
-            <div className='flex flex-wrap items-center gap-2 mt-4'>
-              <span className='text-xs text-gray-400'>Popular:</span>
+            <div className='flex flex-wrap items-center gap-2 mt-28'>
+              <span className='text-base text-[#202430]'>Popular:</span>
               {[
                 "UI Designer",
                 "UX Researcher",
                 "JavaScript",
                 "Data Analyst",
-              ].map((tag) => (
-                <span
-                  key={tag}
-                  className='text-xs text-gray-600 bg-white border border-gray-200 px-3 py-1 rounded-full hover:border-indigo-400 hover:text-indigo-600 cursor-pointer transition-colors'>
+              ].map((tag, index) => (
+                <span key={tag} className='text-base text-[#202430]'>
                   {tag}
+                  {index == 3 ? "" : ","}
                 </span>
               ))}
             </div>
