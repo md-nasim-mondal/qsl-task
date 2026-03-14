@@ -1,112 +1,104 @@
-const categories = [
+"use client";
+
+import { CategoriesIcon } from "@/components/Icons/CategoriesIcon";
+import Link from "next/link";
+import { useState } from "react";
+
+interface Category {
+  icon: (highlighted: boolean) => React.ReactNode;
+  title: string;
+  count: string;
+}
+
+const categories: Category[] = [
+  { icon: CategoriesIcon.design, title: "Design", count: "235 jobs available" },
+  { icon: CategoriesIcon.sales, title: "Sales", count: "756 jobs available" },
   {
-    icon: "✏️",
-    title: "Design",
-    count: "235 jobs available",
-    highlighted: false,
-  },
-  {
-    icon: "📊",
-    title: "Sales",
-    count: "756 jobs available",
-    highlighted: false,
-  },
-  {
-    icon: "💼",
+    icon: CategoriesIcon.marketing,
     title: "Marketing",
     count: "140 jobs available",
-    highlighted: true,
   },
   {
-    icon: "💰",
+    icon: CategoriesIcon.finance,
     title: "Finance",
     count: "325 jobs available",
-    highlighted: false,
   },
   {
-    icon: "💻",
+    icon: CategoriesIcon.technology,
     title: "Technology",
     count: "436 jobs available",
-    highlighted: false,
   },
   {
-    icon: "⚙️",
+    icon: CategoriesIcon.engineering,
     title: "Engineering",
     count: "542 jobs available",
-    highlighted: false,
   },
   {
-    icon: "🗂️",
+    icon: CategoriesIcon.design,
     title: "Business",
     count: "211 jobs available",
-    highlighted: false,
   },
   {
-    icon: "👥",
+    icon: CategoriesIcon.humanResources,
     title: "Human Resource",
     count: "345 jobs available",
-    highlighted: false,
   },
 ];
 
 const Categories = () => {
+  const [highlighted, setHighlighted] = useState<string>("");
+
   return (
-    <section className="w-full py-12 md:py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
-            Explore by{" "}
-            <span className="text-indigo-500">category</span>
+    <section className='w-full py-12 md:py-16 bg-white'>
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+        <div className='flex items-center justify-between mb-8'>
+          <h2 className='text-3xl md:text-5xl font-semibold text-[#25324B]'>
+            Explore by <span className='text-[#26A4FF]'>category</span>
           </h2>
-          <a
-            href="#"
-            className="text-sm text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1 transition-colors"
-          >
-            Show all jobs <span>→</span>
-          </a>
+
+          <Link
+            href='#'
+            className='text-base text-[#4640DE] font-semibold flex items-center gap-1'>
+            Show all jobs →
+          </Link>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {categories.map((cat) => (
-            <div
-              key={cat.title}
-              className={`group rounded-xl p-5 flex flex-col gap-3 cursor-pointer transition-all duration-200 border hover:shadow-md
+        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8'>
+          {categories.map((cat) => {
+            const isHighlighted = highlighted === cat.title;
+
+            return (
+              <div
+                key={cat.title}
+                onMouseEnter={() => setHighlighted(cat.title)}
+                onMouseLeave={() => setHighlighted("")}
+                className={`group rounded-xl p-5 md:p-8 flex flex-col gap-5 md:gap-8 cursor-pointer transition-all duration-200 border hover:shadow-md
                 ${
-                  cat.highlighted
-                    ? "bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200"
+                  isHighlighted
+                    ? "bg-[#4640DE] border-[#4640DE] text-white shadow-md shadow-indigo-200"
                     : "bg-white border-gray-100 hover:border-indigo-200"
-                }`}
-            >
-              <span className="text-2xl">{cat.icon}</span>
-              <div>
-                <h3
-                  className={`font-semibold text-sm md:text-base ${
-                    cat.highlighted ? "text-white" : "text-gray-800"
-                  }`}
-                >
-                  {cat.title}
-                </h3>
-                <p
-                  className={`text-xs mt-0.5 ${
-                    cat.highlighted ? "text-indigo-200" : "text-gray-400"
-                  }`}
-                >
-                  {cat.count}
-                </p>
+                }`}>
+                <span>{cat.icon(isHighlighted)}</span>
+
+                <div>
+                  <h3
+                    className={`font-semibold text-sm md:text-base ${
+                      isHighlighted ? "text-white" : "text-gray-800"
+                    }`}>
+                    {cat.title}
+                  </h3>
+
+                  <p
+                    className={`text-xs mt-0.5 ${
+                      isHighlighted ? "text-indigo-200" : "text-gray-400"
+                    }`}>
+                    {cat.count}
+                    <span className="ml-1 text-lg">→</span>
+                  </p>
+                </div>
               </div>
-              <span
-                className={`text-xs font-medium flex items-center gap-1 ${
-                  cat.highlighted
-                    ? "text-indigo-100"
-                    : "text-indigo-500 group-hover:text-indigo-700"
-                }`}
-              >
-                Browse jobs →
-              </span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

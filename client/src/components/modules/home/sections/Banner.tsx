@@ -12,15 +12,15 @@ const Banner = () => {
   const [location, setLocation] = useState("");
 
   return (
-    <section className='mx-auto relative w-full bg-[#F8F8FD] overflow-y-hidden'>
+    <section className='mx-auto relative w-full bg-[#F8F8FD] overflow-hidden max-w-screen'>
       <Navbar />
       <Container>
         <div className='flex flex-col md:flex-row items-center gap-8 md:gap-0'>
           {/* Left Content */}
           <div className='flex-1'>
             <h1 className='text-4xl md:text-5xl lg:text-7xl font-semibold text-[#25324B] leading-tight'>
-              Discover <br/>
-              more than <br/>
+              Discover <br />
+              more than <br />
               <span className='text-[#26A4FF]'>5000+ Jobs</span>
             </h1>
             <Image src={vectorIcon} alt='vector-icon' />
@@ -93,7 +93,9 @@ const Banner = () => {
                 "JavaScript",
                 "Data Analyst",
               ].map((tag, index) => (
-                <span key={tag} className='text-base text-[#202430] font-extralight'>
+                <span
+                  key={tag}
+                  className='text-base text-[#202430] font-extralight'>
                   {tag}
                   {index == 3 ? "" : " ,"}
                 </span>
@@ -102,10 +104,10 @@ const Banner = () => {
           </div>
 
           {/* Right Image / Illustration */}
-          <div className='flex-1'>
+          <div className='flex-1 hidden md:block overflow-hidden'>
             <div className='w-full h-full flex justify-end'>
               <Image
-                className='w-125 h-155 hidden md:block mt-12 z-20'
+                className='w-125 h-155 mt-12 z-20'
                 src={bannerImg}
                 alt='banner man Img'
               />
@@ -118,6 +120,7 @@ const Banner = () => {
         src={patternImg}
         alt='bg pattern'
       />
+      <div className='w-71 h-180 bg-white absolute rotate-64 z-30 -bottom-90 right-30 hidden lg:block'></div>
     </section>
   );
 };
