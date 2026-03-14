@@ -10,7 +10,7 @@ let server: Server;
 const startServer = async () => {
   try {
     await mongoose.connect(envVars.DB_URL, {
-      dbName: "server-db",
+      dbName: "qsl-db",
     });
 
     console.log("Connected to DB!!");
