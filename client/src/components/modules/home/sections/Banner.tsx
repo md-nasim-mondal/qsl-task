@@ -19,8 +19,8 @@ const Banner = () => {
           {/* Left Content */}
           <div className='flex-1'>
             <h1 className='text-4xl md:text-5xl lg:text-7xl font-semibold text-[#25324B] leading-tight'>
-              Discover <br className='hidden md:block' />
-              more than <br className='hidden md:block' />
+              Discover <br/>
+              more than <br/>
               <span className='text-[#26A4FF]'>5000+ Jobs</span>
             </h1>
             <Image src={vectorIcon} alt='vector-icon' />
@@ -30,7 +30,7 @@ const Banner = () => {
             </p>
 
             {/* Search Bar */}
-            <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-2 bg-white p-4 border border-gray-100 absolute z-30'>
+            <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-2 bg-white p-2 md:p-4 border border-gray-100 absolute z-30 right-0 left-0 md:right-auto md:left-auto'>
               <div className='flex items-center gap-4 flex-1 px-3 py-1'>
                 <svg
                   className='w-6 h-6 text-gray-400 shrink-0'
@@ -85,7 +85,7 @@ const Banner = () => {
             </div>
 
             {/* Tags */}
-            <div className='flex flex-wrap items-center gap-2 mt-28'>
+            <div className='flex flex-wrap items-center mt-48 md:mt-28'>
               <span className='text-base text-[#202430]'>Popular:</span>
               {[
                 "UI Designer",
@@ -93,7 +93,7 @@ const Banner = () => {
                 "JavaScript",
                 "Data Analyst",
               ].map((tag, index) => (
-                <span key={tag} className='text-base text-[#202430]'>
+                <span key={tag} className='text-base text-[#202430] font-extralight'>
                   {tag}
                   {index == 3 ? "" : ","}
                 </span>
@@ -114,7 +114,7 @@ const Banner = () => {
         </div>
       </Container>
       <Image
-        className='w-215 h-198.5 z-10 absolute top-0 right-60'
+        className='w-215 h-198.5 z-10 absolute top-0 md:right-60'
         src={patternImg}
         alt='bg pattern'
       />
