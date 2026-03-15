@@ -113,7 +113,7 @@ export default function AdminSidebar() {
     <aside className="w-64 min-h-screen bg-white border-r border-gray-100 flex flex-col">
       {/* Logo */}
       <div className="px-6 py-5 border-b border-gray-50">
-        <Link href="/dashboard/admin" className="flex items-center gap-2.5">
+        <Link href="/" className="flex items-center gap-2.5">
           <Image src={logoUrl} alt="QuickHire" width={32} height={32} />
           <span className="font-bold text-text-dark text-lg">QuickHire</span>
         </Link>
