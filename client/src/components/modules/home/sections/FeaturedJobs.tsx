@@ -173,14 +173,17 @@ const FeaturedJobs = () => {
     <section className="w-full py-12 md:py-16 bg-white">
       <Container>
         {/* Section Header */}
-        <div className='flex items-center justify-between mb-8'>
-          <h2 className='text-3xl font-semibold text-text-dark'>
+        <div className='flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4'>
+          <h2 className='text-4xl font-bold text-text-dark'>
             Featured <span className='text-blue-light'>jobs</span>
           </h2>
           <Link
             href='/find-jobs'
-            className='text-primary border border-primary px-6 py-2.5 font-bold hover:bg-primary-hover hover:text-white transition-colors flex items-center gap-2 group'>
-            Show all jobs →
+            className='text-base text-primary font-semibold flex items-center gap-1 group'>
+            Show all jobs
+            <span className='group-hover:translate-x-1 transition-transform'>
+              →
+            </span>
           </Link>
         </div>
 
