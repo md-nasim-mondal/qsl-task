@@ -1,4 +1,5 @@
 "use client"
+import Link from "next/link";
 import Image from "next/image";
 import logo from "../../../../../public/assets/logo/frame_3.png";
 const footerLinks = {
@@ -39,12 +40,12 @@ const Footer = () => {
               <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link}>
-                    <a
-                      href="#"
+                    <Link
+                      href="/"
                       className="text-sm text-gray-500 hover:text-indigo-400 transition-colors"
                     >
                       {link}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -76,9 +77,9 @@ const Footer = () => {
             © {new Date().getFullYear()} QuickHire. All rights reserved.
           </p>
           <div className="flex gap-4">
-            <a href="#" className="text-xs text-gray-600 hover:text-indigo-400 transition-colors">Privacy</a>
-            <a href="#" className="text-xs text-gray-600 hover:text-indigo-400 transition-colors">Terms</a>
-            <a href="#" className="text-xs text-gray-600 hover:text-indigo-400 transition-colors">Cookies</a>
+            <Link href="/" className="text-xs text-gray-600 hover:text-indigo-400 transition-colors">Privacy</Link>
+            <Link href="/" className="text-xs text-gray-600 hover:text-indigo-400 transition-colors">Terms</Link>
+            <Link href="/" className="text-xs text-gray-600 hover:text-indigo-400 transition-colors">Cookies</Link>
           </div>
         </div>
       </div>

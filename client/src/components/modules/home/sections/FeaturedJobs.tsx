@@ -121,49 +121,51 @@ const tagColor: Record<string, string> = {
 };
 
 const JobCard = ({ job }: { job: Job }) => (
-  <div className="bg-white rounded-2xl border border-gray-100 p-6 hover:shadow-md transition-all duration-200 cursor-pointer group">
-    {/* Top row: logo + badge */}
-    <div className="flex items-center justify-between mb-3">
-      <div
-        className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm shrink-0"
-        style={{ backgroundColor: job.companyColor }}
-      >
-        {job.companyInitial}
-      </div>
-      <span className="text-[11px] font-semibold text-[#4640DE] border border-[#4640DE] px-2.5 py-0.5">
-        {job.type}
-      </span>
-    </div>
-
-    {/* Title */}
-    <h3 className="font-bold text-sm text-gray-800 group-hover:text-indigo-600 transition-colors mb-0.5">
-      {job.title}
-    </h3>
-
-    {/* Company · Location */}
-    <p className="text-xs text-gray-400 mb-2">
-      {job.company} · {job.location}
-    </p>
-
-    {/* Description */}
-    <p className="text-xs text-gray-500 leading-relaxed mb-3 line-clamp-2">
-      {job.description}
-    </p>
-
-    {/* Tags */}
-    <div className="flex flex-wrap gap-1.5">
-      {job.tags.map((tag) => (
-        <span
-          key={tag}
-          className={`text-[11px] font-medium px-2 py-0.5 rounded-md ${
-            tagColor[tag] ?? "bg-gray-100 text-gray-500"
-          }`}
+  <Link href={`/find-jobs/${job.id}`}>
+    <div className="bg-white rounded-2xl border border-gray-100 p-6 hover:shadow-md transition-all duration-200 cursor-pointer group">
+      {/* Top row: logo + badge */}
+      <div className="flex items-center justify-between mb-3">
+        <div
+          className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm shrink-0"
+          style={{ backgroundColor: job.companyColor }}
         >
-          {tag}
+          {job.companyInitial}
+        </div>
+        <span className="text-[11px] font-semibold text-primary border border-primary px-2.5 py-0.5">
+          {job.type}
         </span>
-      ))}
+      </div>
+
+      {/* Title */}
+      <h3 className="font-bold text-sm text-gray-800 group-hover:text-indigo-600 transition-colors mb-0.5">
+        {job.title}
+      </h3>
+
+      {/* Company · Location */}
+      <p className="text-xs text-gray-400 mb-2">
+        {job.company} · {job.location}
+      </p>
+
+      {/* Description */}
+      <p className="text-xs text-gray-500 leading-relaxed mb-3 line-clamp-2">
+        {job.description}
+      </p>
+
+      {/* Tags */}
+      <div className="flex flex-wrap gap-1.5">
+        {job.tags.map((tag) => (
+          <span
+            key={tag}
+            className={`text-[11px] font-medium px-2 py-0.5 rounded-md ${
+              tagColor[tag] ?? "bg-gray-100 text-gray-500"
+            }`}
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
     </div>
-  </div>
+  </Link>
 );
 
 const FeaturedJobs = () => {
@@ -171,13 +173,13 @@ const FeaturedJobs = () => {
     <section className="w-full py-12 md:py-16 bg-white">
       <Container>
         {/* Section Header */}
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-3xl md:text-5xl font-semibold text-[#25324B]">
-            Featured <span className="text-[#26A4FF]">jobs</span>
+        <div className='flex items-center justify-between mb-8'>
+          <h2 className='text-3xl font-semibold text-text-dark'>
+            Featured <span className='text-blue-light'>jobs</span>
           </h2>
           <Link
-            href='#'
-            className='text-base text-[#4640DE] font-semibold flex items-center gap-1'>
+            href='/find-jobs'
+            className='text-primary border border-primary px-6 py-2.5 font-bold hover:bg-primary-hover hover:text-white transition-colors flex items-center gap-2 group'>
             Show all jobs →
           </Link>
         </div>

@@ -1,26 +1,27 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@theme {
+  --font-epilogue: var(--font-epilogue);
+  --font-red-hat: var(--font-red-hat);
+  --color-primary: #4640DE; /* Primary Purplish/Blue */
+  --color-primary-hover: #342db1;
+  --color-blue-light: #26A4FF; /* Blue accent */
+  --color-text-dark: #25324B; /* Dark Heading Text */
+  --color-text-body: #515B6F; /* Body Text */
+  --color-text-light: #7C8493; /* Lighter Text */
+  --color-bg-light: #F8F8FD; /* Light Background */
+  --color-border: #D6DDEB; /* Border color */
+  --color-success: #56CDAD;
+  --color-danger: #FF6550;
+  --color-warning: #FFB836;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply antialiased text-text-body bg-white;
+  font-family: var(--font-epilogue), system-ui, sans-serif;
+}
+
+/* Custom styles for headers to use the right font if needed */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-text-dark);
 }

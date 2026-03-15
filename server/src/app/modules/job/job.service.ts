@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IJob } from './job.interface';
 import { Job } from './job.model';
 

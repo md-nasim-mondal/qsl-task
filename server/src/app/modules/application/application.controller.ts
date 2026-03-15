@@ -1,7 +1,9 @@
-import { Request, Response } from 'express';
-import { ApplicationService } from './application.service';
-import { catchAsync } from '../../utils/catchAsync';
-import { sendResponse } from '../../utils/sendResponse';
+import { Request, Response } from "express";
+import { ApplicationService } from "./application.service";
+import { catchAsync } from "../../utils/catchAsync";
+import { sendResponse } from "../../utils/sendResponse";
+import { JwtPayload } from "jsonwebtoken";
+import AppError from "../../errorHelpers/AppError";
 
 const createApplication = catchAsync(async (req: Request, res: Response) => {
   const result = await ApplicationService.createApplication(req.body);
@@ -9,7 +11,7 @@ const createApplication = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: 201,
     success: true,
-    message: 'Application submitted successfully',
+    message: "Application submitted successfully",
     data: result,
   });
 });
@@ -21,12 +23,42 @@ const getApplicationsByJob = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: 'Applications fetched successfully',
+    message: "Applications fetched successfully",
+    data: result,
+  });
+});
+
+const getAllApplications = catchAsync(async (req: Request, res: Response) => {
+  const result = await ApplicationService.getAllApplications();
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "All applications fetched successfully",
+    data: result,
+  });
+});
+
+const getMyApplications = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user as JwtPayload | undefined;
+  const userId = user?.userId;
+  if (!userId) {
+    throw new AppError(401, "Not authorized");
+  }
+
+  const result = await ApplicationService.getMyApplications(userId);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "My applications fetched successfully",
     data: result,
   });
 });
 
 export const ApplicationController = {
   createApplication,
+  getAllApplications,
+  getMyApplications,
   getApplicationsByJob,
 };

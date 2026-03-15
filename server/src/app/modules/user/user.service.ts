@@ -43,8 +43,7 @@ const updateUser = async (
   decodedToken: JwtPayload
 ) => {
   if (
-    decodedToken.role === Role.SENDER ||
-    decodedToken.role === Role.RECEIVER
+    decodedToken.role === Role.CANDIDATE
   ) {
     if (userId !== decodedToken.userId) {
       throw new AppError(401, "You are not authorized!");
@@ -75,8 +74,7 @@ const updateUser = async (
 
   if (payload.role) {
     if (
-      decodedToken.role === Role.SENDER ||
-      decodedToken.role === Role.RECEIVER
+      decodedToken.role === Role.CANDIDATE
     ) {
       throw new AppError(httpStatus.FORBIDDEN, "You are not authorized");
     }
@@ -88,8 +86,7 @@ const updateUser = async (
 
   if (payload.isActive || payload.isDeleted || payload.isVerified) {
     if (
-      decodedToken.role === Role.SENDER ||
-      decodedToken.role === Role.RECEIVER
+      decodedToken.role === Role.CANDIDATE
     ) {
       throw new AppError(httpStatus.FORBIDDEN, "You are not authorized");
     }

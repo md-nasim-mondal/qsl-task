@@ -51,18 +51,19 @@ const Categories = () => {
   return (
     <section className='w-full py-12 md:py-16 bg-white'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-        <div className='flex items-center justify-between mb-8'>
-          <h2 className='text-3xl md:text-5xl font-semibold text-[#25324B]'>
-            Explore by <span className='text-[#26A4FF]'>category</span>
+        <div className='flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4'>
+          <h2 className='text-4xl font-bold text-text-dark'>
+            Explore by <span className='text-blue-light'>category</span>
           </h2>
-
           <Link
-            href='#'
-            className='text-base text-[#4640DE] font-semibold flex items-center gap-1'>
-            Show all jobs →
+            href='/find-jobs'
+            className='text-base text-primary font-semibold flex items-center gap-1 group'>
+            Show all jobs
+            <span className='group-hover:translate-x-1 transition-transform'>
+              →
+            </span>
           </Link>
         </div>
-
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8'>
           {categories.map((cat) => {
             const isHighlighted = highlighted === cat.title;
@@ -75,10 +76,12 @@ const Categories = () => {
                 className={`group rounded-xl p-5 md:p-8 flex flex-col gap-5 md:gap-8 cursor-pointer transition-all duration-200 border hover:shadow-md
                 ${
                   isHighlighted
-                    ? "bg-[#4640DE] border-[#4640DE] text-white shadow-md shadow-indigo-200"
+                    ? "bg-primary border-primary text-white shadow-md shadow-indigo-200"
                     : "bg-white border-gray-100 hover:border-indigo-200"
                 }`}>
-                <span>{cat.icon(isHighlighted)}</span>
+                <div className='w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white text-gray-800 transition-all duration-300'>
+                  {cat.icon(isHighlighted)}
+                </div>
 
                 <div>
                   <h3

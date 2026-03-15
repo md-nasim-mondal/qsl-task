@@ -5,26 +5,33 @@ import bannerImg from "../../../../../public/assets/images/qslBannerImg.png";
 import patternImg from "../../../../../public/assets/pattern/pattern.svg";
 import Image from "next/image";
 import { useState } from "react";
-import Navbar from "./Navbar";
+import { useRouter } from "next/navigation";
 
 const Banner = () => {
+  const router = useRouter();
   const [keyword, setKeyword] = useState("");
   const [location, setLocation] = useState("");
 
+  const handleSearch = () => {
+    const query = new URLSearchParams();
+    if (keyword) query.append("searchTerm", keyword);
+    if (location) query.append("location", location);
+    router.push(`/find-jobs?${query.toString()}`);
+  };
+
   return (
-    <section className='mx-auto relative w-full bg-[#F8F8FD] overflow-hidden max-w-screen'>
-      <Navbar />
+    <section className='mx-auto relative w-full bg-bg-light overflow-hidden max-w-screen'>
       <Container>
         <div className='flex flex-col md:flex-row items-center gap-8 md:gap-0'>
           {/* Left Content */}
           <div className='flex-1'>
-            <h1 className='text-4xl md:text-5xl lg:text-7xl font-semibold text-[#25324B] leading-tight'>
+            <h1 className='text-4xl md:text-5xl lg:text-7xl font-semibold text-text-dark leading-tight'>
               Discover <br />
               more than <br />
-              <span className='text-[#26A4FF]'>5000+ Jobs</span>
+              <span className='text-blue-light'>5000+ Jobs</span>
             </h1>
             <Image src={vectorIcon} alt='vector-icon' />
-            <p className='text-[#515B6F] text-lg md:text-xl max-w-lg leading-relaxed py-6'>
+            <p className='text-text-body text-lg md:text-xl max-w-lg leading-relaxed py-6'>
               Great platform for the job seeker that searching for new career
               heights and passionate about startups.
             </p>
@@ -49,7 +56,7 @@ const Banner = () => {
                   placeholder='Job title or keyword'
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
-                  className='flex-1 text-base text-gray-700 outline-none bg-transparent placeholder-gray-400 border-b border-[#D6DDEB] w-58'
+                  className='flex-1 text-base text-gray-700 outline-none bg-transparent placeholder-gray-400 border-b border-border w-58'
                 />
               </div>
               <div className='flex items-center gap-4 flex-1 px-3 py-1'>
@@ -76,10 +83,12 @@ const Banner = () => {
                   placeholder='Your location'
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className='flex-1 text-base text-gray-700 outline-none bg-transparent placeholder-gray-400 border-b border-[#D6DDEB] w-58'
+                  className='flex-1 text-base text-gray-700 outline-none bg-transparent placeholder-gray-400 border-b border-border w-58'
                 />
               </div>
-              <button className='bg-[#4640DE] text-white text-lg font-bold px-7 py-3.5 transition-colors whitespace-nowrap'>
+              <button
+                onClick={handleSearch}
+                className='bg-primary text-white text-lg font-bold px-7 py-3.5 transition-colors whitespace-nowrap hover:bg-primary-hover'>
                 Search My Job
               </button>
             </div>
@@ -97,7 +106,7 @@ const Banner = () => {
                   key={tag}
                   className='text-base text-[#202430] font-extralight'>
                   {tag}
-                  {index == 3 ? "" : " ,"}
+                  {index == 3 ? " " : ", "}
                 </span>
               ))}
             </div>
