@@ -1,4 +1,3 @@
-"use client";
 import Image from "next/image";
 import sidebarImg from "../../../../../public/assets/images/Dashboard-Company.svg";
 import dashboardImg from "../../../../../public/assets/images/Content.png";

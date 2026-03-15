@@ -111,7 +111,7 @@ const typeBadgeColor: Record<string, string> = {
 };
 
 const LatestJobRow = ({ job }: { job: LatestJob }) => (
-  <Link href={`/find-jobs/${job.id}`}>
+  <Link href={`/find-jobs?searchTerm=${encodeURIComponent(job.title)}`}>
     <div className='flex items-center gap-4 md:gap-6 bg-white border border-gray-100 rounded-2xl px-5 py-4 hover:shadow-sm hover:border-indigo-100 transition-all duration-200 cursor-pointer group'>
       {/* Company avatar */}
       <div

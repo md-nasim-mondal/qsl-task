@@ -121,7 +121,7 @@ const tagColor: Record<string, string> = {
 };
 
 const JobCard = ({ job }: { job: Job }) => (
-  <Link href={`/find-jobs/${job.id}`}>
+  <Link href={`/find-jobs?searchTerm=${encodeURIComponent(job.title)}`}>
     <div className="bg-white rounded-2xl border border-gray-100 p-6 hover:shadow-md transition-all duration-200 cursor-pointer group">
       {/* Top row: logo + badge */}
       <div className="flex items-center justify-between mb-3">

@@ -69,7 +69,8 @@ const Categories = () => {
             const isHighlighted = highlighted === cat.title;
 
             return (
-              <div
+              <Link
+                href={`/find-jobs?category=${encodeURIComponent(cat.title)}`}
                 key={cat.title}
                 onMouseEnter={() => setHighlighted(cat.title)}
                 onMouseLeave={() => setHighlighted("")}
@@ -92,14 +93,14 @@ const Categories = () => {
                   </h3>
 
                   <p
-                    className={`text-xs mt-0.5 ${
+                    className={`text-xs mt-0.5 flex items-center ${
                       isHighlighted ? "text-indigo-200" : "text-gray-400"
                     }`}>
                     {cat.count}
                     <span className="ml-1 text-lg">→</span>
                   </p>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>
