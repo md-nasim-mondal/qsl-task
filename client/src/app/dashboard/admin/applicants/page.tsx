@@ -1,4 +1,5 @@
 import { getApiUrl } from "@/lib/api";
+import { cookies } from "next/headers";
 
 interface Application {
   _id: string;
@@ -11,8 +12,13 @@ interface Application {
 }
 
 async function fetchApplications(): Promise<Application[]> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("qh_token")?.value;
   try {
-    const res = await fetch(`${getApiUrl()}/applications`, { cache: "no-store" });
+    const res = await fetch(`${getApiUrl()}/applications`, { 
+      cache: "no-store",
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
     const data = await res.json();
     return data.success ? data.data : [];
   } catch {

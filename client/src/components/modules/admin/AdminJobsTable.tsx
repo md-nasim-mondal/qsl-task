@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
-import { getApiUrl } from "@/lib/api";
+import { getApiUrl, authHeaders } from "@/lib/api";
 
 interface Job {
   _id: string;
@@ -27,7 +27,12 @@ export default function AdminJobsTable({ initialJobs }: Props) {
     setDeletingId(id);
 
     try {
-      const res = await fetch(`${getApiUrl()}/jobs/${id}`, { method: "DELETE" });
+      const res = await fetch(`${getApiUrl()}/jobs/${id}`, {
+        method: "DELETE",
+        headers: {
+          ...authHeaders(),
+        },
+      });
       const data = await res.json();
 
       if (data.success) {

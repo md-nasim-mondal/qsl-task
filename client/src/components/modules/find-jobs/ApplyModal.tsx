@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { getApiUrl } from "@/lib/api";
+import { getApiUrl, authHeaders } from "@/lib/api";
 
 interface Job {
   _id: string;
@@ -39,7 +39,7 @@ export default function ApplyModal({ job }: Props) {
     try {
       const res = await fetch(`${getApiUrl()}/applications`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ job: job._id, ...formData }),
       });
       const data = await res.json();

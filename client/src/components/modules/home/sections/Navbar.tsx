@@ -3,6 +3,7 @@ import logo from "../../../../../public/assets/logo/frame_3.png";
 import Image from "next/image";
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Container from "@/components/shared/Container";
 import { useAuth } from "@/context/AuthContext";
 
@@ -14,6 +15,11 @@ const navLinks = [
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, logout } = useAuth();
+  const pathname = usePathname();
+
+  if (pathname?.startsWith("/dashboard")) {
+    return null;
+  }
 
   return (
     <nav className="w-full bg-bg-light">

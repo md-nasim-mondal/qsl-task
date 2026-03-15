@@ -11,11 +11,13 @@ export const checkAuth =
   (...authRoles: string[]) =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const accessToken = req.headers.authorization;
+      const authHeader = req.headers.authorization;
 
-      if (!accessToken) {
-        throw new AppError(403, "No Token Received");
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        throw new AppError(403, "No Token Received or Invalid Format");
       }
+
+      const accessToken = authHeader.split(" ")[1];
 
       const verifiedToken = verifyToken(
         accessToken,

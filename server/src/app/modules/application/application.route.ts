@@ -10,11 +10,12 @@ const router = express.Router();
 
 router.post(
   '/',
+  checkAuth(Role.CANDIDATE, Role.ADMIN, Role.SUPER_ADMIN),
   validateRequest(ApplicationValidation.createApplicationValidationSchema),
   ApplicationController.createApplication
 );
-router.get('/', ApplicationController.getAllApplications);
+router.get('/', checkAuth(Role.ADMIN, Role.SUPER_ADMIN), ApplicationController.getAllApplications);
 router.get('/me', checkAuth(...Object.values(Role)), ApplicationController.getMyApplications);
-router.get('/:jobId', ApplicationController.getApplicationsByJob);
+router.get('/:jobId', checkAuth(Role.ADMIN, Role.SUPER_ADMIN), ApplicationController.getApplicationsByJob);
 
 export const ApplicationRoutes = router;

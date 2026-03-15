@@ -37,7 +37,7 @@ export default function SignupForm() {
 
     setLoading(true);
     try {
-      const res = await fetch(`${getApiUrl()}/users/register`, {
+      const res = await fetch(`${getApiUrl()}/user/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

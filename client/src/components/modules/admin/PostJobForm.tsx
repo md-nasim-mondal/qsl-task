@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { getApiUrl } from "@/lib/api";
+import { getApiUrl, authHeaders } from "@/lib/api";
+
 
 const CATEGORIES = [
   "Design",
@@ -42,7 +43,10 @@ export default function PostJobForm() {
     try {
       const res = await fetch(`${getApiUrl()}/jobs`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          ...authHeaders(),
+        },
         body: JSON.stringify(formData),
       });
 

@@ -1,11 +1,11 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
-import { getApiUrl } from "@/lib/api";
+import { getApiUrl, authHeaders } from "@/lib/api";
 import { useState } from "react";
 
 export default function CompanyProfilePage() {
-  const { user, accessToken } = useAuth();
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     name: user?.name ?? "",
     email: user?.email ?? "",
@@ -24,11 +24,11 @@ export default function CompanyProfilePage() {
     e.preventDefault();
     setStatus({ saving: true, saved: false, error: "" });
     try {
-      const res = await fetch(`${getApiUrl()}/users/${user?._id}`, {
+      const res = await fetch(`${getApiUrl()}/user/${user?._id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
+          ...authHeaders(),
         },
         body: JSON.stringify({ name: formData.name }),
       });

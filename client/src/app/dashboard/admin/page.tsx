@@ -2,6 +2,7 @@ import Link from "next/link";
 import AdminJobsTable from "@/components/modules/admin/AdminJobsTable";
 import AdminDashboardStats from "@/components/modules/admin/AdminDashboardStats";
 import { getApiUrl } from "@/lib/api";
+import { cookies } from "next/headers";
 
 interface Job {
   _id: string;
@@ -20,8 +21,13 @@ interface Application {
 }
 
 async function fetchJobs(): Promise<Job[]> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("qh_token")?.value;
   try {
-    const res = await fetch(`${getApiUrl()}/jobs`, { cache: "no-store" });
+    const res = await fetch(`${getApiUrl()}/jobs`, { 
+      cache: "no-store",
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
     const data = await res.json();
     return data.success ? data.data : [];
   } catch {
@@ -30,8 +36,13 @@ async function fetchJobs(): Promise<Job[]> {
 }
 
 async function fetchApplications(): Promise<Application[]> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("qh_token")?.value;
   try {
-    const res = await fetch(`${getApiUrl()}/applications`, { cache: "no-store" });
+    const res = await fetch(`${getApiUrl()}/applications`, { 
+      cache: "no-store",
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
     const data = await res.json();
     return data.success ? data.data : [];
   } catch {

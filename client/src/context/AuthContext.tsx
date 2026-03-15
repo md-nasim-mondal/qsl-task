@@ -30,24 +30,27 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  // Restore session from localStorage on mount
-  useEffect(() => {
+  // Initialize synchronously so accessToken is never null after mount —
+  // prevents "Bearer null" being sent before useEffect runs.
+  const [user, setUser] = useState<User | null>(() => {
     try {
       const stored = Cookies.get("qh_user");
-      const token = Cookies.get("qh_token") || Cookies.get("accessToken"); // Fallback for backend token name if any
-      if (stored && token) {
-        setUser(JSON.parse(stored));
-        setAccessToken(token);
-      }
+      return stored ? JSON.parse(stored) : null;
     } catch {
-      /* ignore */
-    } finally {
-      setLoading(false);
+      return null;
     }
+  });
+  const [accessToken, setAccessToken] = useState<string | null>(() => {
+    try {
+      return Cookies.get("qh_token") || Cookies.get("accessToken") || null;
+    } catch {
+      return null;
+    }
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(false);
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {

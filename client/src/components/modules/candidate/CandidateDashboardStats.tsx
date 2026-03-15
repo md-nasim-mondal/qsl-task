@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getApiUrl } from "@/lib/api";
+import { getApiUrl, authHeaders } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 
 export default function CandidateDashboardStats() {
@@ -14,9 +14,7 @@ export default function CandidateDashboardStats() {
       if (!accessToken) return;
       try {
         const res = await fetch(`${getApiUrl()}/applications/me`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+          headers: authHeaders(),
         });
         const data = await res.json();
         if (data.success) {
