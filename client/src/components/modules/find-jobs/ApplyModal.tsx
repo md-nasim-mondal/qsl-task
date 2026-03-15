@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { getApiUrl, authHeaders } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
-import Link from "next/link";
 
 interface Job {
   _id: string;
@@ -146,12 +145,46 @@ export default function ApplyModal({ job }: Props) {
                   Please login as a candidate to apply for this position and track
                   your application status.
                 </p>
-                <Link
-                  href="/login"
+                <button
+                  onClick={() => {
+                    setShowModal(false);
+                    window.location.href = "/login";
+                  }}
                   className="bg-primary text-white px-8 py-3 rounded-lg font-bold hover:bg-primary-hover transition-colors inline-block"
                 >
                   Login to Apply
-                </Link>
+                </button>
+              </div>
+            ) : user.role !== "candidate" ? (
+              <div className="bg-orange-50 border border-orange-100 p-8 rounded-xl text-center">
+                <svg
+                  className="w-16 h-16 text-orange-400 mx-auto mb-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+                <h3 className="text-xl font-bold text-text-dark mb-2">
+                  Candidates Only
+                </h3>
+                <p className="text-text-body mb-2 max-w-sm mx-auto">
+                  Only candidate accounts can apply for job positions.
+                </p>
+                <p className="text-sm text-text-body/70">
+                  Your current role is: <span className="font-bold capitalize">{user.role}</span>
+                </p>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="mt-6 text-primary font-semibold hover:underline"
+                >
+                  Close
+                </button>
               </div>
             ) : (
               <form key={user?._id || "guest"} onSubmit={handleApply} className="space-y-5">

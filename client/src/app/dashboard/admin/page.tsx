@@ -4,6 +4,13 @@ import AdminDashboardStats from "@/components/modules/admin/AdminDashboardStats"
 import { getApiUrl } from "@/lib/api";
 import { cookies } from "next/headers";
 
+interface Meta {
+  total: number;
+  page: number;
+  limit: number;
+  totalPage: number;
+}
+
 interface Job {
   _id: string;
   title: string;
@@ -20,33 +27,39 @@ interface Application {
   createdAt: string;
 }
 
-async function fetchJobs(): Promise<Job[]> {
+async function fetchRecentJobs(): Promise<{ jobs: Job[], meta: Meta }> {
   const cookieStore = await cookies();
   const token = cookieStore.get("qh_token")?.value;
   try {
-    const res = await fetch(`${getApiUrl()}/jobs`, { 
+    const res = await fetch(`${getApiUrl()}/jobs?limit=5&sort=-createdAt`, { 
       cache: "no-store",
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
     const data = await res.json();
-    return data.success ? data.data : [];
+    return {
+      jobs: data.success ? data.data : [],
+      meta: data.meta || { total: 0, page: 1, limit: 5, totalPage: 1 }
+    };
   } catch {
-    return [];
+    return { jobs: [], meta: { total: 0, page: 1, limit: 5, totalPage: 1 } };
   }
 }
 
-async function fetchApplications(): Promise<Application[]> {
+async function fetchApplications(): Promise<{ applications: Application[], meta: Meta }> {
   const cookieStore = await cookies();
   const token = cookieStore.get("qh_token")?.value;
   try {
-    const res = await fetch(`${getApiUrl()}/applications`, { 
+    const res = await fetch(`${getApiUrl()}/applications?limit=10&sort=-createdAt`, { 
       cache: "no-store",
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
     const data = await res.json();
-    return data.success ? data.data : [];
+    return {
+      applications: data.success ? data.data : [],
+      meta: data.meta || { total: 0, page: 1, limit: 10, totalPage: 1 }
+    };
   } catch {
-    return [];
+    return { applications: [], meta: { total: 0, page: 1, limit: 10, totalPage: 1 } };
   }
 }
 
@@ -55,22 +68,28 @@ export const metadata = {
 };
 
 export default async function AdminDashboard() {
-  const [jobs, applications] = await Promise.all([fetchJobs(), fetchApplications()]);
+  const [jobsData, appsData] = await Promise.all([
+    fetchRecentJobs(), 
+    fetchApplications()
+  ]);
+
+  const { jobs, meta: jobMeta } = jobsData;
+  const { applications, meta: appMeta } = appsData;
 
   return (
     <div className="space-y-8">
       {/* Stats row */}
-      <AdminDashboardStats jobCount={jobs.length} applicationCount={applications.length} />
+      <AdminDashboardStats jobCount={jobMeta.total} applicationCount={appMeta.total} />
 
       {/* Jobs table */}
       <div>
         <div className="flex justify-between items-center mb-4">
-          <Link href="/dashboard/admin/jobs/new" className="text-xl font-bold text-text-dark hover:underline">Job Listings</Link>
+          <h2 className="text-xl font-bold text-text-dark">Recent Job Listings</h2>
           <Link
-            href="/dashboard/admin/jobs/new"
-            className="bg-primary text-white px-4 py-2 text-sm font-semibold rounded-lg hover:bg-primary-hover transition-colors"
+            href="/dashboard/admin/jobs"
+            className="text-primary font-semibold hover:underline flex items-center gap-1 text-sm"
           >
-            + Post New Job
+            View All Jobs →
           </Link>
         </div>
         <AdminJobsTable initialJobs={jobs} />
@@ -81,7 +100,7 @@ export default async function AdminDashboard() {
         <h2 className="text-xl font-bold text-text-dark mb-4">
           Recent Applications
           <span className="ml-2 text-sm font-normal text-text-body">
-            ({applications.length} total)
+            ({appMeta.total} total)
           </span>
         </h2>
         {applications.length === 0 ? (

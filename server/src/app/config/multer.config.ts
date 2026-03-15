@@ -1,39 +1,22 @@
-import { CloudinaryStorage } from "multer-storage-cloudinary";
-import { cloudinaryUpload } from "./cloudinary.config";
 import multer from "multer";
+import path from "path";
+import fs from "fs";
 
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinaryUpload,
-  params: {
-    public_id: (req, file) => {
-      // my image.png
+const uploadDir = path.join(process.cwd(), "public/uploads");
 
-      // My Special.Image#!@.png => 4545adsfsadf-45324263452-my-image.png
-      // My Special.Image#!@.png => [My Special, Image#!@, png]
+// Ensure upload directory exists
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
-      const fileName = file.originalname
-        .toLowerCase()
-        .replace(/\s+/g, "-") // empty space remove replace with dash
-        .replace(/\./g, "-")
-        // eslint-disable-next-line no-useless-escape
-        .replace(/[^a-z0-9\-\.]/g, ""); // non alpha numeric - !@#$
-
-      const extension = file.originalname.split(".").pop();
-
-      // binary -> 0,1 hexa decimal -> 0-9 A-F base 36 -> 0-9 a-z
-      // 0.2312345121 -> "0.hedfa674338sasfamx" ->
-      //452384772534
-      const uniqueFileName =
-        Math.random().toString(36).substring(2) +
-        "-" +
-        Date.now() +
-        "-" +
-        fileName +
-        "." +
-        extension;
-
-      return uniqueFileName;
-    },
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const extension = path.extname(file.originalname);
+    cb(null, file.fieldname + "-" + uniqueSuffix + extension);
   },
 });
 

@@ -3,6 +3,8 @@ import Container from "@/components/shared/Container";
 import JobSearchBar from "@/components/modules/find-jobs/FindJobsClient";
 import CategoryFilter from "@/components/modules/find-jobs/CategoryFilter";
 import JobList from "@/components/modules/find-jobs/JobList";
+import Pagination from "@/components/shared/Pagination";
+import LimitSelector from "@/components/shared/LimitSelector";
 import { getApiUrl } from "@/lib/api";
 
 interface Job {
@@ -19,27 +21,49 @@ interface PageProps {
     searchTerm?: string;
     category?: string;
     location?: string;
+    page?: string;
+    limit?: string;
   }>;
+}
+
+interface FetchJobsResponse {
+  jobs: Job[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPage: number;
+  };
 }
 
 async function fetchJobs(params: {
   searchTerm?: string;
   category?: string;
   location?: string;
-}): Promise<Job[]> {
+  page?: string;
+  limit?: string;
+}): Promise<FetchJobsResponse> {
   const query = new URLSearchParams();
   if (params.searchTerm) query.set("searchTerm", params.searchTerm);
   if (params.category) query.set("category", params.category);
   if (params.location) query.set("location", params.location);
+  if (params.page) query.set("page", params.page);
+  if (params.limit) query.set("limit", params.limit);
 
   try {
     const res = await fetch(`${getApiUrl()}/jobs?${query.toString()}`, {
       next: { revalidate: 60 },
     });
     const data = await res.json();
-    return data.success ? data.data : [];
+    return {
+      jobs: data.success ? data.data : [],
+      meta: data.meta || { page: 1, limit: 10, total: 0, totalPage: 1 },
+    };
   } catch {
-    return [];
+    return {
+      jobs: [],
+      meta: { page: 1, limit: 10, total: 0, totalPage: 1 },
+    };
   }
 }
 
@@ -50,7 +74,7 @@ export const metadata = {
 
 export default async function FindJobsPage({ searchParams }: PageProps) {
   const params = await searchParams;
-  const jobs = await fetchJobs(params);
+  const { jobs, meta } = await fetchJobs(params);
 
   return (
     <div className="min-h-screen bg-bg-light">
@@ -78,19 +102,25 @@ export default async function FindJobsPage({ searchParams }: PageProps) {
       <Container className="py-12">
         <div className="flex flex-col md:flex-row gap-8">
           <aside className="w-full md:w-1/4">
-            <Suspense fallback={null}>
-              <CategoryFilter />
-            </Suspense>
+            <div className="sticky top-24">
+              <Suspense fallback={null}>
+                <CategoryFilter />
+              </Suspense>
+            </div>
           </aside>
 
           <main className="w-full md:w-3/4">
-            <div className="mb-6 flex justify-between items-center">
+            <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <h2 className="text-text-dark text-3xl font-bold">All Jobs</h2>
-              <p className="text-text-body">
-                Showing {jobs.length} result{jobs.length !== 1 ? "s" : ""}
-              </p>
+              <div className="flex items-center gap-6">
+                <LimitSelector limit={meta.limit} />
+                <p className="text-text-body">
+                    Showing {jobs.length} of {meta.total} result{meta.total !== 1 ? "s" : ""}
+                </p>
+              </div>
             </div>
             <JobList jobs={jobs} />
+            <Pagination page={meta.page} totalPages={meta.totalPage} />
           </main>
         </div>
       </Container>

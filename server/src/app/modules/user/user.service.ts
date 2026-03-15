@@ -31,6 +31,7 @@ const createUser = async (payload: Partial<IUser>) => {
     email,
     password: hashedPassword,
     auths: [authProvider],
+    isVerified: true, // Auto-verify for MVP demo
     ...rest,
   });
 
@@ -71,16 +72,7 @@ const updateUser = async (
   ) {
     throw new AppError(403, "Admins cannot modify super admins");
   }
-
-  /**
-   * email - can not update
-   * name, phone, password address
-   * password - re hashing
-   *  only admin superadmin - role, isDeleted...
-   *
-   * promoting to superadmin - superadmin
-   */
-
+  
   if (payload.role) {
     if (decodedToken.role === Role.CANDIDATE) {
       throw new AppError(httpStatus.FORBIDDEN, "You are not authorized");

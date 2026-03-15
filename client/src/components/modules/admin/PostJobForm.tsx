@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { getApiUrl, authHeaders } from "@/lib/api";
 
 
@@ -17,7 +16,12 @@ const CATEGORIES = [
   "Technology",
 ];
 
-export default function PostJobForm() {
+interface PostJobFormProps {
+  onSuccess?: () => void;
+  onCancel?: () => void;
+}
+
+export default function PostJobForm({ onSuccess, onCancel }: PostJobFormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState({
     title: "",
@@ -53,8 +57,12 @@ export default function PostJobForm() {
       const data = await res.json();
 
       if (data.success) {
-        router.push("/dashboard/admin");
-        router.refresh();
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          router.push("/dashboard/admin");
+          router.refresh();
+        }
       } else {
         setStatus({
           loading: false,
@@ -67,17 +75,8 @@ export default function PostJobForm() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="mb-6">
-        <Link
-          href="/dashboard/admin"
-          className="text-text-body hover:text-primary flex items-center gap-2 transition-colors font-medium w-fit"
-        >
-          ← Back to Dashboard
-        </Link>
-      </div>
-
-      <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+    <div className="w-full">
+      <div className="bg-white">
         <h2 className="text-2xl font-bold text-text-dark mb-6">
           Post a New Job
         </h2>
@@ -171,17 +170,18 @@ export default function PostJobForm() {
             />
           </div>
 
-          <div className="pt-4 flex justify-end gap-3 border-t border-gray-50">
-            <Link
-              href="/dashboard/admin"
-              className="px-6 py-3 font-medium text-text-body hover:text-text-dark transition-colors"
+          <div className="pt-4 flex justify-end gap-3 border-t border-gray-50 mt-6">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="px-6 py-2.5 font-bold text-text-body hover:text-text-dark transition-colors"
             >
               Cancel
-            </Link>
+            </button>
             <button
               type="submit"
               disabled={status.loading}
-              className={`bg-primary text-white px-8 py-3 font-bold hover:bg-primary-hover transition-colors rounded-md ${
+              className={`bg-primary text-white px-8 py-2.5 font-bold hover:bg-primary-hover transition-all rounded-xl shadow-lg shadow-primary/10 active:scale-95 ${
                 status.loading ? "opacity-70 cursor-not-allowed" : ""
               }`}
             >

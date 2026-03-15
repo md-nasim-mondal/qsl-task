@@ -1,29 +1,28 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { IJob } from './job.interface';
-import { Job } from './job.model';
+import { QueryBuilder } from "../../utils/QueryBuilder";
+import { IJob } from "./job.interface";
+import { Job } from "./job.model";
 
 const createJob = async (payload: IJob) => {
   const result = await Job.create(payload);
   return result;
 };
 
-const getAllJobs = async (query: Record<string, unknown>) => {
-  const filter: any = {};
-  if (query.category) {
-    filter.category = query.category;
-  }
-  if (query.location) {
-    filter.location = { $regex: query.location, $options: 'i' };
-  }
-  if (query.searchTerm) {
-    filter.$or = [
-      { title: { $regex: query.searchTerm, $options: 'i' } },
-      { company: { $regex: query.searchTerm, $options: 'i' } }
-    ];
-  }
+const getAllJobs = async (query: Record<string, string>) => {
+  const searchableField = ["title", "company", "category", "location"];
+  const jobQuery = new QueryBuilder(Job.find(), query)
+    .search(searchableField)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
-  const result = await Job.find(filter).sort({ createdAt: -1 });
-  return result;
+  const data = await jobQuery.build();
+  const meta = await jobQuery.getMeta();
+
+  return {
+    data,
+    meta,
+  };
 };
 
 const getSingleJob = async (id: string) => {

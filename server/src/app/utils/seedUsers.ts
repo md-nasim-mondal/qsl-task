@@ -1,12 +1,13 @@
 import bcrypt from "bcrypt";
 import { User } from "../modules/user/user.model";
+import { envVars } from "../config/env";
 
 export const seedUsers = async () => {
   try {
     const adminExists = await User.findOne({ email: "admin@demo.com" });
     const userExists = await User.findOne({ email: "user@demo.com" });
 
-    const passwordHash = await bcrypt.hash("password123", Number(12));
+    const passwordHash = await bcrypt.hash("password123", Number(envVars.BCRYPT_SALT_ROUND));
 
     if (!adminExists) {
       await User.create({
@@ -14,6 +15,7 @@ export const seedUsers = async () => {
         email: "admin@demo.com",
         password: passwordHash,
         role: "admin",
+        isVerified: true
       });
       console.log("Admin Demo user seeded: admin@demo.com / password123");
     } else {
@@ -26,6 +28,7 @@ export const seedUsers = async () => {
         email: "user@demo.com",
         password: passwordHash,
         role: "candidate",
+        isVerified: true
       });
       console.log("Candidate Demo user seeded: user@demo.com / password123");
     } else {

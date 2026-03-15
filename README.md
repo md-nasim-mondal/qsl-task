@@ -1,179 +1,95 @@
-# QuickHire — Simple Job Board Application
+# QuickHire — Premium Job Board Platform
 
-A full-stack mini job board built with **Next.js** (frontend) and **Node.js / Express** (backend), using **MongoDB** as the database.
-
----
-
-## Features
-
-| Area | Feature |
-|------|---------|
-| **Job Listings** | Browse all jobs, search by title/keyword, filter by category & location |
-| **Job Detail** | Full job description, breadcrumb navigation |
-| **Apply Now** | Modal form with name, email, resume link (URL), and cover note |
-| **Admin Panel** | Post new jobs, delete existing jobs — via `/admin` |
-| **SSR** | All pages are React Server Components — data fetched on the server |
-| **Validation** | Zod validates all API inputs (email format, URL format, required fields) |
-| **Responsive** | Fully responsive with Tailwind CSS |
+QuickHire is a modern, high-performance job board platform built with **Next.js 15**, **Express**, and **MongoDB**. It features a stateless, purely JWT-based authentication system, comprehensive Role-Based Access Control (RBAC), and a premium, responsive UI/UX.
 
 ---
 
-## Tech Stack
+## 🚀 Key Features
 
-| Layer | Tech |
-|-------|------|
-| Frontend | Next.js 15 (App Router, RSC), Tailwind CSS |
-| Backend | Node.js, Express, TypeScript |
-| Database | MongoDB (Mongoose) |
-| Validation | Zod |
+### 👤 Candidate Features
+- **Stateless Authentication**: Purely JWT-driven login/signup for better scalability.
+- **Job Search**: Advanced search by keywords, categories, and locations.
+- **Application Tracking**: Dedicated dashboard to track status of all applied jobs.
+- **Premium Profile**: Manage personal profiles and uploaded resumes.
+- **One-Application Rule**: Prevents candidates from applying to the same job twice.
 
----
+### 🏢 Admin & Management
+- **Centralized Dashboard**: Manage jobs, users, and applications from a secure panel.
+- **Detailed Analytics**: Real-time stats on open jobs and total applicants.
+- **User Management**: Unified table to activate, block, or delete users.
+- **Self-Protection**: Advanced safeguards preventing admins from modifying super-admins or deleting their own accounts.
+- **Role Control**: Admins can manage candidates, while super-admins have full authority.
 
-## Project Structure
-
-```
-qsl-task/
-├── client/         # Next.js frontend
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── find-jobs/          # Job listings (SSR)
-│   │   │   ├── find-jobs/[id]/     # Job detail (SSR)
-│   │   │   └── admin/              # Admin panel (SSR)
-│   │   ├── components/
-│   │   │   ├── modules/
-│   │   │   │   ├── find-jobs/      # Search bar, filters, job list, apply modal
-│   │   │   │   ├── admin/          # Jobs table, post job form
-│   │   │   │   └── home/           # Home page sections
-│   │   │   └── shared/             # Reusable components (Container, etc.)
-│   │   └── lib/
-│   │       └── api.ts              # Centralised API URL utility
-└── server/         # Express backend
-    └── src/
-        └── app/modules/
-            ├── job/                # Job CRUD
-            └── application/        # Application submissions
-```
+### 🛠️ Technical Highlights
+- **Stateless Architecture**: Removed all session-based dependencies for a modern API footprint.
+- **Local Storage Survival**: Migrated from Cloudinary to reliable local disk storage for uploads.
+- **Automated Builds**: Custom scripts for production-ready template synchronization.
+- **Robust Validation**: Zod-powered schema validation for all endpoints.
+- **Mocked Utilities**: Email utility mocked for development stability without external SMTP.
 
 ---
 
-## API Endpoints
+## 💻 Tech Stack
 
-### Jobs
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/v1/jobs` | List all jobs (supports `?searchTerm`, `?category`, `?location`) |
-| `GET` | `/api/v1/jobs/:id` | Get a single job |
-| `POST` | `/api/v1/jobs` | Create a new job (Admin) |
-| `DELETE` | `/api/v1/jobs/:id` | Delete a job (Admin) |
-
-### Applications
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/v1/applications` | Submit a job application |
+- **Frontend**: Next.js 15 (App Router), Tailwind CSS, Framer Motion, Axios, React Context API.
+- **Backend**: Node.js, Express.js, TypeScript, Passport.js (Local Strategy), JWT.
+- **Database**: MongoDB (Mongoose), QueryBuilder for advanced filtering.
+- **Validation**: Zod (Backend), React Hook Form (Frontend).
 
 ---
 
-## Getting Started
+## 🛠️ Setup & Installation
 
-### Prerequisites
-- Node.js 18+
-- MongoDB (local or MongoDB Atlas)
-- npm or pnpm
-
----
-
-### 1. Clone the repo
-
-```bash
-git clone <your-repo-url>
-cd qsl-task
-```
-
----
+### 1. Prerequisites
+- **Node.js**: v18.0.0 or higher
+- **MongoDB**: local instance or Atlas URI
 
 ### 2. Backend Setup
-
 ```bash
 cd server
 npm install
-
-# Copy and configure environment variables
 cp .env.example .env
-# Edit .env and set DB_URL to your MongoDB connection string
-
+# Configure your DB_URL and JWT secrets in .env
 npm run dev
-# Server runs on http://localhost:5000
 ```
-
-**Server `.env` variables:**
-
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `PORT` | Server port | `5000` |
-| `DB_URL` | MongoDB connection string | `mongodb://localhost:27017/quickhire` |
-| `NODE_ENV` | Environment | `development` |
-| `FRONTEND_URL` | Allowed CORS origin | `http://localhost:3000` |
-
----
 
 ### 3. Frontend Setup
-
 ```bash
 cd client
-npm install
-
-# Copy and configure environment variables
-cp .env.example .env.local
-# Edit .env.local if your backend runs on a different URL
-
-npm run dev
-# App runs on http://localhost:3000
-```
-
-**Frontend `.env.local` variables:**
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `NEXT_PUBLIC_API_URL` | Backend API base URL | `http://localhost:5000/api/v1` |
-
----
-
-### 4. Open in browser
-
-| Page | URL |
-|------|-----|
-| Home | http://localhost:3000 |
-| Find Jobs | http://localhost:3000/find-jobs |
-| Admin Dashboard | http://localhost:3000/admin |
-| Post New Job | http://localhost:3000/admin/jobs/new |
-
----
-
-## Data Models
-
-**Job**
-```
-id, title, company, location, category, description, createdAt
-```
-
-**Application**
-```
-id, job (ref: Job), name, email, resume_link, cover_note, createdAt
+pnpm install
+# Configure NEXT_PUBLIC_API_URL in .env.local if needed
+pnpm run dev
 ```
 
 ---
 
-## Validation Rules
+## 🔑 Demo Credentials
 
-All API endpoints validate input with **Zod**:
-
-- All fields are **required**
-- `email` must be a valid email address
-- `resume_link` must be a valid URL
-- String fields must be non-empty
+| Role | Email | Password |
+|------|-------|----------|
+| **Super Admin** | `admin@demo.com` | `password123` |
+| **Candidate** | `user@demo.com` | `password123` |
 
 ---
 
-## License
+## 📁 Project Structure
 
-MIT
+```bash
+qsl-task/
+├── client/             # Next.js 15 Frontend
+│   └── src/
+│       ├── app/        # Dashboard & App Router pages
+│       ├── components/ # Atomic UI components & Modules
+│       └── lib/        # API utilities & helpers
+└── server/             # Express.js Backend
+    └── src/
+        └── app/
+            ├── config/ # Environment & Auth configs
+            ├── modules/# Feature-based modular architecture
+            └── utils/  # Reusable logic & patterns
+```
+
+---
+
+## 📜 License
+This project is licensed under the MIT License.

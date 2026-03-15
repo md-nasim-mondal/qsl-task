@@ -18,7 +18,7 @@ export default function CandidateDashboardStats() {
         });
         const data = await res.json();
         if (data.success) {
-          setJobsApplied(data.data.length);
+          setJobsApplied(data.meta?.total || data.data.length || 0);
         }
       } catch (error) {
         console.error("Failed to fetch applications:", error);

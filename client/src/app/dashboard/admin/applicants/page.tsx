@@ -1,5 +1,7 @@
 import { getApiUrl } from "@/lib/api";
 import { cookies } from "next/headers";
+import ApplicantsFilter from "@/components/modules/admin/ApplicantsFilter";
+import Pagination from "@/components/shared/Pagination";
 
 interface Application {
   _id: string;
@@ -11,34 +13,67 @@ interface Application {
   job?: { title: string; company: string };
 }
 
-async function fetchApplications(): Promise<Application[]> {
+interface PageProps {
+  searchParams: Promise<{
+    searchTerm?: string;
+    page?: string;
+    limit?: string;
+  }>;
+}
+
+interface FetchApplicationsResponse {
+  data: Application[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPage: number;
+  };
+}
+
+async function fetchApplications(params: Record<string, string | undefined>): Promise<FetchApplicationsResponse> {
   const cookieStore = await cookies();
   const token = cookieStore.get("qh_token")?.value;
+  
+  const query = new URLSearchParams();
+  if (params.searchTerm) query.set("searchTerm", params.searchTerm);
+  if (params.page) query.set("page", params.page);
+  if (params.limit) query.set("limit", params.limit);
+
   try {
-    const res = await fetch(`${getApiUrl()}/applications`, { 
+    const res = await fetch(`${getApiUrl()}/applications?${query.toString()}`, { 
       cache: "no-store",
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
     const data = await res.json();
-    return data.success ? data.data : [];
+    return {
+      data: data.success ? data.data : [],
+      meta: data.meta || { page: 1, limit: 10, total: 0, totalPage: 1 },
+    };
   } catch {
-    return [];
+    return {
+      data: [],
+      meta: { page: 1, limit: 10, total: 0, totalPage: 1 },
+    };
   }
 }
 
 export const metadata = { title: "All Applicants | QuickHire Admin" };
 
-export default async function ApplicantsPage() {
-  const applications = await fetchApplications();
+export default async function ApplicantsPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const { data: applications, meta } = await fetchApplications(params);
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-text-dark">All Applicants</h1>
         <p className="text-text-body text-sm mt-1">
-          {applications.length} application{applications.length !== 1 ? "s" : ""} received
+          Showing {applications.length} of {meta.total} received application{meta.total !== 1 ? "s" : ""}
         </p>
       </div>
+
+      <ApplicantsFilter total={meta.total} page={meta.page} limit={meta.limit} />
 
       {applications.length === 0 ? (
         <div className="bg-white border border-gray-100 rounded-xl p-16 text-center">
@@ -101,6 +136,10 @@ export default async function ApplicantsPage() {
           </table>
         </div>
       )}
+
+      <div className="flex justify-center mt-4">
+        <Pagination page={meta.page} totalPages={meta.totalPage} />
+      </div>
     </div>
   );
 }

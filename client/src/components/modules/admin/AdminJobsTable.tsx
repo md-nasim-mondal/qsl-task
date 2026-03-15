@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { getApiUrl, authHeaders } from "@/lib/api";
 import ConfirmModal from "@/components/shared/ConfirmModal";
@@ -21,6 +21,10 @@ interface Props {
 export default function AdminJobsTable({ initialJobs }: Props) {
   const router = useRouter();
   const [jobs, setJobs] = useState<Job[]>(initialJobs);
+
+  useEffect(() => {
+    setJobs(initialJobs);
+  }, [initialJobs]);
   const [modal, setModal] = useState<{
     isOpen: boolean;
     title: string;

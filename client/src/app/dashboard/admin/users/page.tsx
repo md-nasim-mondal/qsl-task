@@ -21,6 +21,7 @@ export default function UsersManagementPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 10,
@@ -49,8 +50,14 @@ export default function UsersManagementPage() {
     async (page = 1) => {
       setLoading(true);
       try {
+        const query = new URLSearchParams({
+          page: page.toString(),
+          limit: pagination.limit.toString(),
+        });
+        if (searchTerm) query.append("searchTerm", searchTerm);
+
         const res = await fetch(
-          `${getApiUrl()}/user/all-users?page=${page}&limit=${pagination.limit}`,
+          `${getApiUrl()}/user/all-users?${query.toString()}`,
           {
             headers: authHeaders(),
           },
@@ -73,7 +80,7 @@ export default function UsersManagementPage() {
         setLoading(false);
       }
     },
-    [pagination.limit],
+    [pagination.limit, searchTerm],
   );
 
   useEffect(() => {
@@ -214,12 +221,25 @@ export default function UsersManagementPage() {
 
   return (
     <div className='space-y-6'>
-      <div className='flex justify-between items-center'>
+      <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4'>
         <div>
           <h1 className='text-2xl font-bold text-text-dark'>User Management</h1>
           <p className='text-text-body text-sm mt-1'>
             Manage roles, status, and accounts.
           </p>
+        </div>
+        <div className="w-full md:w-72 relative">
+          <input
+            type="text"
+            placeholder="Search name or email..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && fetchUsers(1)}
+            className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm shadow-sm"
+          />
+          <svg className="w-5 h-5 absolute left-3 top-2.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
         </div>
       </div>
 
@@ -324,21 +344,39 @@ export default function UsersManagementPage() {
           </div>
 
           {/* Pagination */}
-          <div className='px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between'>
-            <span className='text-sm text-text-body'>
-              Showing{" "}
-              <span className='font-semibold text-text-dark'>
-                {users.length}
-              </span>{" "}
-              users
-            </span>
+          <div className='px-6 py-4 bg-gray-50 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4'>
+            <div className="flex items-center gap-4">
+              <span className='text-sm text-text-body'>
+                Showing{" "}
+                <span className='font-semibold text-text-dark'>
+                  {(pagination.page - 1) * pagination.limit + 1} - {Math.min(pagination.page * pagination.limit, pagination.total)}
+                </span>{" "}
+                of <span className="font-semibold text-text-dark">{pagination.total}</span> users
+              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-text-body font-medium">Show</span>
+                <select
+                  value={pagination.limit}
+                  onChange={(e) => {
+                    const newLimit = parseInt(e.target.value);
+                    setPagination(p => ({ ...p, limit: newLimit, page: 1 }));
+                  }}
+                  className="bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs font-bold text-text-dark focus:outline-none"
+                >
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </div>
             <div className='flex gap-2'>
               <button
                 onClick={() =>
                   setPagination((p) => ({ ...p, page: p.page - 1 }))
                 }
                 disabled={pagination.page === 1}
-                className='px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-text-dark hover:bg-gray-50 disabled:opacity-50 transition-colors'>
+                className='px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-text-dark hover:bg-gray-50 disabled:opacity-50 transition-colors shadow-sm'>
                 Previous
               </button>
               <button
@@ -346,7 +384,7 @@ export default function UsersManagementPage() {
                   setPagination((p) => ({ ...p, page: p.page + 1 }))
                 }
                 disabled={pagination.page === pagination.totalPages}
-                className='px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-text-dark hover:bg-gray-50 disabled:opacity-50 transition-colors'>
+                className='px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-text-dark hover:bg-gray-50 disabled:opacity-50 transition-colors shadow-sm'>
                 Next
               </button>
             </div>

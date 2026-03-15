@@ -3,6 +3,7 @@ import { IApplication } from './application.interface';
 
 const applicationSchema = new Schema<IApplication>(
   {
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     job: { type: Schema.Types.ObjectId, ref: 'Job', required: true },
     name: { type: String, required: true },
     email: { type: String, required: true },

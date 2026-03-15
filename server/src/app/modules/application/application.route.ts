@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.post(
   '/',
-  checkAuth(Role.CANDIDATE, Role.ADMIN, Role.SUPER_ADMIN),
+  checkAuth(Role.CANDIDATE),
   validateRequest(ApplicationValidation.createApplicationValidationSchema),
   ApplicationController.createApplication
 );
