@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
+import { useDashboard } from "@/context/DashboardContext";
 
 const logoUrl = "/assets/logo/frame_3.png";
 
@@ -41,6 +42,7 @@ export default function CandidateSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
+  const { isSidebarOpen, closeSidebar } = useDashboard();
 
   const handleLogout = async () => {
     await logout();
@@ -51,61 +53,81 @@ export default function CandidateSidebar() {
     href === "/dashboard/candidate" ? pathname === "/dashboard/candidate" : pathname?.startsWith(href);
 
   return (
-    <aside className="w-64 min-h-screen bg-white border-r border-gray-100 flex flex-col">
-      <div className="px-6 py-5 border-b border-gray-50">
-        <Link href="/" className="flex items-center gap-2.5">
-          <Image src={logoUrl} alt="QuickHire" width={32} height={32} />
-          <span className="font-bold text-text-dark text-lg">QuickHire</span>
-        </Link>
-      </div>
+    <>
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity duration-300"
+          onClick={closeSidebar}
+        />
+      )}
 
-      <nav className="flex-1 px-3 py-5 space-y-0.5">
-        <div className="pt-2 pb-2">
-          <p className="text-xs font-semibold text-gray-400 px-3 uppercase tracking-wider mb-2">
-            Candidate Panel
-          </p>
+      {/* Sidebar */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-100 flex flex-col transition-transform duration-300 transform md:relative md:translate-x-0 ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="px-6 py-5 border-b border-gray-50 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5">
+            <Image src={logoUrl} alt="QuickHire" width={32} height={32} />
+            <span className="font-bold text-text-dark text-lg">QuickHire</span>
+          </Link>
+          <button onClick={closeSidebar} className="p-1 md:hidden text-gray-400 hover:text-gray-600">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
-        {navItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group ${
-              isActive(item.href)
-                ? "bg-primary/10 text-primary"
-                : "text-text-body hover:bg-gray-50 hover:text-text-dark"
-            }`}
-          >
-            <span
-              className={`${
-                isActive(item.href) ? "text-primary" : "text-gray-400 group-hover:text-gray-600"
+
+        <nav className="flex-1 px-3 py-5 space-y-0.5 overflow-y-auto">
+          <div className="pt-2 pb-2">
+            <p className="text-xs font-semibold text-gray-400 px-3 uppercase tracking-wider mb-2">
+              Candidate Panel
+            </p>
+          </div>
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group ${
+                isActive(item.href)
+                  ? "bg-primary/10 text-primary"
+                  : "text-text-body hover:bg-gray-50 hover:text-text-dark"
               }`}
             >
-              {item.icon}
-            </span>
-            <span className="flex-1">{item.label}</span>
-          </Link>
-        ))}
-      </nav>
+              <span
+                className={`${
+                  isActive(item.href) ? "text-primary" : "text-gray-400 group-hover:text-gray-600"
+                }`}
+              >
+                {item.icon}
+              </span>
+              <span className="flex-1">{item.label}</span>
+            </Link>
+          ))}
+        </nav>
 
-      <div className="px-4 py-4 border-t border-gray-100">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
-            {user?.name?.charAt(0)?.toUpperCase() ?? "U"}
+        <div className="px-4 py-4 border-t border-gray-100">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+              {user?.name?.charAt(0)?.toUpperCase() ?? "U"}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-text-dark truncate">
+                {user?.name ?? "Candidate"}
+              </p>
+              <p className="text-xs text-text-body truncate">{user?.email}</p>
+            </div>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-text-dark truncate">
-              {user?.name ?? "Candidate"}
-            </p>
-            <p className="text-xs text-text-body truncate">{user?.email}</p>
-          </div>
+          <button
+            onClick={handleLogout}
+            className="w-full text-left text-xs text-red-500 hover:text-red-700 font-medium py-1 transition-colors"
+          >
+            Sign out
+          </button>
         </div>
-        <button
-          onClick={handleLogout}
-          className="w-full text-left text-xs text-red-500 hover:text-red-700 font-medium py-1 transition-colors"
-        >
-          Sign out
-        </button>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 }

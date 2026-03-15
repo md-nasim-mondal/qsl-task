@@ -23,14 +23,14 @@ export default function SchedulePage() {
 
       <div className="grid gap-4">
         {SCHEDULE.map((item) => (
-          <div key={item.id} className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm flex items-center gap-5">
-            <div className="text-center w-20 shrink-0">
+          <div key={item.id} className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm flex flex-col xs:flex-row items-center gap-4 xs:gap-5 text-center xs:text-left">
+            <div className="w-20 shrink-0">
               <p className="text-sm font-bold text-primary">{item.time}</p>
             </div>
-            <div className="w-px h-10 bg-gray-100 shrink-0" />
-            <div className="flex-1">
-              <p className="font-semibold text-text-dark">{item.candidate}</p>
-              <p className="text-sm text-text-body">{item.role}</p>
+            <div className="hidden xs:block w-px h-10 bg-gray-100 shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-text-dark truncate">{item.candidate}</p>
+              <p className="text-sm text-text-body truncate">{item.role}</p>
             </div>
             <span className="text-xs font-medium px-3 py-1 bg-primary/10 text-primary rounded-full shrink-0">
               {item.type}

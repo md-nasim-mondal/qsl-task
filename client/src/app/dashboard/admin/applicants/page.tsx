@@ -81,7 +81,8 @@ export default async function ApplicantsPage({ searchParams }: PageProps) {
         </div>
       ) : (
         <div className="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm">
-          <table className="w-full text-left">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left min-w-175 lg:min-w-0">
             <thead>
               <tr className="bg-bg-light border-b border-gray-100 text-sm text-text-body">
                 <th className="py-3 px-5 font-semibold">Applicant</th>
@@ -135,6 +136,7 @@ export default async function ApplicantsPage({ searchParams }: PageProps) {
             </tbody>
           </table>
         </div>
+      </div>
       )}
 
       <div className="flex justify-center mt-4">

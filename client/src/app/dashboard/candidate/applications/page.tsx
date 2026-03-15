@@ -87,7 +87,8 @@ export default async function CandidateApplicationsPage({ searchParams }: PagePr
       ) : (
         <>
           <div className="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm">
-            <table className="w-full text-left">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left min-w-125 md:min-w-0">
               <thead>
                 <tr className="bg-bg-light border-b border-gray-100 text-sm text-text-body">
                   <th className="py-3 px-5 font-semibold">Job Title</th>
@@ -127,6 +128,7 @@ export default async function CandidateApplicationsPage({ searchParams }: PagePr
               </tbody>
             </table>
           </div>
+        </div>
           
           <div className="flex justify-center mt-4">
             <Pagination page={meta.page} totalPages={meta.totalPage} />
