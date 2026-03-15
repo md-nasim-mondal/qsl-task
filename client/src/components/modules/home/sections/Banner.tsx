@@ -125,7 +125,7 @@ const Banner = () => {
         </div>
       </Container>
       <Image
-        className='w-215 h-198.5 z-10 absolute top-0 md:right-60'
+        className='w-215 h-198.5 z-10 absolute -top-25 md:right-70'
         src={patternImg}
         alt='bg pattern'
       />

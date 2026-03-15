@@ -86,7 +86,7 @@ const Categories = () => {
                 <div>
                   <h3
                     className={`font-semibold text-sm md:text-base ${
-                      isHighlighted ? "text-white" : "text-gray-800"
+                      isHighlighted ? "text-white!" : "text-gray-800"
                     }`}>
                     {cat.title}
                   </h3>
