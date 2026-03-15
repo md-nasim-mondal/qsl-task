@@ -6,21 +6,15 @@ export enum Role {
   CANDIDATE = "candidate",
 }
 
-//auth providers
-/**
- * email, password
- * google authentication
- */
-
 export interface IAuthProvider {
   provider: "google" | "credentials"; // "Google", "Credential"
   providerId: string;
 }
 
 export enum IsActive {
-  ACTIVE = "ACTIVE",
-  INACTIVE = "INACTIVE",
-  BLOCKED = "BLOCKED",
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+  BLOCKED = "blocked",
 }
 
 export interface IUser {

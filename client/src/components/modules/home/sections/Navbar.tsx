@@ -78,11 +78,8 @@ const Navbar = () => {
                 <div className="px-4 py-3 bg-gray-50/50 border-b border-gray-100">
                   <p className="text-sm font-semibold text-text-dark truncate">{user.name}</p>
                   <p className="text-xs text-text-body truncate mt-0.5">{user.email}</p>
-                  <span className="inline-block mt-1.5 px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold tracking-wider uppercase rounded">
-                    {user.role}
-                  </span>
                 </div>
-                <div className="p-2 border-b border-gray-100">
+<div className="p-2 border-b border-gray-100">
                   <Link
                     href={user.role === 'admin' || user.role === 'super_admin' ? '/dashboard/admin' : '/dashboard/candidate'}
                     className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-text-dark hover:bg-gray-50 rounded-lg transition-colors"

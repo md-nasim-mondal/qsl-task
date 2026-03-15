@@ -25,6 +25,7 @@ interface AuthContextType {
   loading: boolean;
   login: (email: string, password: string) => Promise<User>;
   logout: () => Promise<void>;
+  refetchUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -89,8 +90,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const refetchUser = useCallback(async () => {
+    try {
+      const res = await fetch(`${getApiUrl()}/user/me`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${Cookies.get("qh_token") || Cookies.get("accessToken")}`,
+        },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setUser(data.data);
+        Cookies.set("qh_user", JSON.stringify(data.data), { expires: 7 });
+      }
+    } catch (err) {
+      console.error("Failed to refetch user:", err);
+    }
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, accessToken, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, accessToken, loading, login, logout, refetchUser }}>
       {children}
     </AuthContext.Provider>
   );

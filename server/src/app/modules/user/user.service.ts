@@ -58,9 +58,18 @@ const updateUser = async (
 
   if (
     decodedToken.role === Role.ADMIN &&
+    ifUserExist.role === Role.ADMIN
+  ) {
+    if (userId !== decodedToken.userId) {
+      throw new AppError(403, "Admins cannot modify other admins");
+    }
+  }
+
+  if (
+    decodedToken.role === Role.ADMIN &&
     ifUserExist.role === Role.SUPER_ADMIN
   ) {
-    throw new AppError(401, "You are not authorized!");
+    throw new AppError(403, "Admins cannot modify super admins");
   }
 
   /**
@@ -73,15 +82,19 @@ const updateUser = async (
    */
 
   if (payload.role) {
-    if (
-      decodedToken.role === Role.CANDIDATE
-    ) {
+    if (decodedToken.role === Role.CANDIDATE) {
       throw new AppError(httpStatus.FORBIDDEN, "You are not authorized");
     }
 
-    // if (payload.role === Role.SUPER_ADMIN && decodedToken.role === Role.ADMIN) {
-    //     throw new AppError(httpStatus.FORBIDDEN, "You are not authorized");
-    // }
+    if (
+      payload.role === Role.SUPER_ADMIN &&
+      decodedToken.role === Role.ADMIN
+    ) {
+      throw new AppError(
+        httpStatus.FORBIDDEN,
+        "Admins cannot promote users to super_admin"
+      );
+    }
   }
 
   if (payload.isActive || payload.isDeleted || payload.isVerified) {
@@ -132,10 +145,32 @@ const getMe = async (userId: string) => {
   };
 };
 
+const deleteUser = async (userId: string, decodedToken: JwtPayload) => {
+  const userToDelete = await User.findById(userId);
+  if (!userToDelete) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  // Security checks
+  if (decodedToken.role === Role.ADMIN) {
+    if (userToDelete.role === Role.ADMIN || userToDelete.role === Role.SUPER_ADMIN) {
+      throw new AppError(403, "Admins cannot delete other admins or super admins");
+    }
+  }
+
+  if (decodedToken.userId === userId) {
+    throw new AppError(400, "You cannot delete your own account here");
+  }
+
+  const result = await User.findByIdAndDelete(userId);
+  return result;
+};
+
 export const UserServices = {
   createUser,
   getAllUsers,
   updateUser,
   getSingleUser,
   getMe,
+  deleteUser,
 };

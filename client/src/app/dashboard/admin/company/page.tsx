@@ -5,7 +5,7 @@ import { getApiUrl, authHeaders } from "@/lib/api";
 import { useState } from "react";
 
 export default function CompanyProfilePage() {
-  const { user } = useAuth();
+  const { user, refetchUser } = useAuth();
   const [formData, setFormData] = useState({
     name: user?.name ?? "",
     email: user?.email ?? "",
@@ -34,6 +34,7 @@ export default function CompanyProfilePage() {
       });
       const data = await res.json();
       if (!data.success) throw new Error(data.message);
+      await refetchUser();
       setStatus({ saving: false, saved: true, error: "" });
       setTimeout(() => setStatus((s) => ({ ...s, saved: false })), 3000);
     } catch (err: unknown) {

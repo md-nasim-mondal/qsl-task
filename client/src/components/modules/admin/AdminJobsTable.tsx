@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { getApiUrl, authHeaders } from "@/lib/api";
+import ConfirmModal from "@/components/shared/ConfirmModal";
 
 interface Job {
   _id: string;
@@ -20,32 +21,67 @@ interface Props {
 export default function AdminJobsTable({ initialJobs }: Props) {
   const router = useRouter();
   const [jobs, setJobs] = useState<Job[]>(initialJobs);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [modal, setModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    variant: "primary" | "danger" | "warning";
+    loading: boolean;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: () => {},
+    variant: "primary",
+    loading: false,
+  });
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this job?")) return;
-    setDeletingId(id);
+  const handleDelete = (id: string) => {
+    setModal({
+        isOpen: true,
+        title: "Delete Job Posting",
+        message: "Are you sure you want to delete this job? This action is permanent.",
+        variant: "danger",
+        loading: false,
+        onConfirm: () => executeDelete(id)
+    });
+  };
 
+  const executeDelete = async (id: string) => {
+    setModal(prev => ({ ...prev, loading: true }));
     try {
       const res = await fetch(`${getApiUrl()}/jobs/${id}`, {
         method: "DELETE",
-        headers: {
-          ...authHeaders(),
-        },
+        headers: authHeaders(),
       });
       const data = await res.json();
 
       if (data.success) {
         setJobs((prev) => prev.filter((j) => j._id !== id));
-        // Revalidate so a hard refresh also shows the updated list
+        setModal(prev => ({ ...prev, isOpen: false }));
         router.refresh();
       } else {
-        alert(data.message ?? "Failed to delete job.");
+        setModal({
+            isOpen: true,
+            title: "Error",
+            message: data.message ?? "Failed to delete job.",
+            variant: "danger",
+            loading: false,
+            onConfirm: () => setModal(prev => ({ ...prev, isOpen: false }))
+        });
       }
     } catch {
-      alert("Network error occurred.");
+       setModal({
+            isOpen: true,
+            title: "Network Error",
+            message: "A network error occurred while trying to delete the job.",
+            variant: "danger",
+            loading: false,
+            onConfirm: () => setModal(prev => ({ ...prev, isOpen: false }))
+        });
     } finally {
-      setDeletingId(null);
+       setModal(prev => ({ ...prev, loading: false }));
     }
   };
 
@@ -97,17 +133,27 @@ export default function AdminJobsTable({ initialJobs }: Props) {
               <td className="py-4 px-6 text-right">
                 <button
                   onClick={() => handleDelete(job._id)}
-                  disabled={deletingId === job._id}
                   className="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-md transition-colors text-sm font-medium disabled:opacity-50"
                   title="Delete Job"
                 >
-                  {deletingId === job._id ? "Deleting…" : "Delete"}
+                  Delete
                 </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      <ConfirmModal
+        isOpen={modal.isOpen}
+        onClose={() => setModal(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={modal.onConfirm}
+        title={modal.title}
+        message={modal.message}
+        variant={modal.variant}
+        loading={modal.loading}
+        confirmLabel={modal.title === "Error" || modal.title === "Network Error" ? "Close" : "Delete"}
+      />
     </div>
   );
 }

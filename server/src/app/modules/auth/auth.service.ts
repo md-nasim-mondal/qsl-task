@@ -11,61 +11,6 @@ import { User } from "../user/user.model";
 import { IsActive, type IAuthProvider } from "../user/user.interface";
 import { sendEmail } from "../../utils/sendEmail";
 
-// const credentialsLogin = async (payload: Partial<IUser>) => {
-//     const { email, password } = payload;
-
-//     const isUserExist = await User.findOne({ email })
-
-//     if (!isUserExist) {
-//         throw new AppError(httpStatus.BAD_REQUEST, "Email does not exist")
-//     }
-
-//     const isPasswordMatched = await bcryptjs.compare(password as string, isUserExist.password as string)
-
-//     if (!isPasswordMatched) {
-//         throw new AppError(httpStatus.BAD_REQUEST, "Incorrect Password")
-//     }
-
-// if (
-//     isUserExist.isActive === IsActive.BLOCKED ||
-//     isUserExist.isActive === IsActive.INACTIVE
-//   ) {
-//     throw new AppError(
-//       httpStatus.BAD_REQUEST,
-//       `User is ${isUserExist.isActive}`
-//     );
-//   }
-//   if (isUserExist.isDeleted) {
-//     throw new AppError(httpStatus.BAD_REQUEST, "User is deleted!");
-//   }
-
-//   if (!isUserExist.isVerified) {
-//     throw new AppError(httpStatus.BAD_REQUEST, "User is not verified!!");
-//   }
-
-//   const isPasswordMatched = await bcryptjs.compare(
-//     password as string,
-//     isUserExist.password as string
-//   );
-
-//   if (!isPasswordMatched) {
-//     throw new AppError(httpStatus.BAD_REQUEST, "Incorrect Password!");
-//   }
-
-//   const userTokens = createUserTokens(isUserExist);
-
-//   setAuthCookie(res, userTokens);
-
-//     // delete isUserExist.password;
-
-//     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-//     const { password: pass, ...rest } = isUserExist.toObject()
-
-//     return {
-//         user: rest
-//     }
-
-// }
 const getNewAccessToken = async (refreshToken: string) => {
   const newAccessToken = await createNewAccessTokenWithRefreshToken(
     refreshToken
@@ -193,10 +138,7 @@ const forgotPassword = async (email: string) => {
   });
 };
 
-//user - login - token (email, role, _id) - booking / payment / booking / payment cancel - token
-
 export const AuthServices = {
-  // credentialsLogin,
   getNewAccessToken,
   changePassword,
   resetPassword,

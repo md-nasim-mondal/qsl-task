@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { getApiUrl, authHeaders } from "@/lib/api";
+import { useAuth } from "@/context/AuthContext";
+import Link from "next/link";
 
 interface Job {
   _id: string;
@@ -13,13 +15,15 @@ interface Props {
 }
 
 export default function ApplyModal({ job }: Props) {
+  const { user } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
+    name: user?.name || "",
+    email: user?.email || "",
     resume_link: "",
     cover_note: "",
   });
+
   const [applyStatus, setApplyStatus] = useState({
     loading: false,
     success: false,
@@ -34,6 +38,10 @@ export default function ApplyModal({ job }: Props) {
 
   const handleApply = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      setApplyStatus({ loading: false, success: false, error: "Please login to apply." });
+      return;
+    }
     setApplyStatus({ loading: true, success: false, error: "" });
 
     try {
@@ -46,7 +54,7 @@ export default function ApplyModal({ job }: Props) {
 
       if (data.success) {
         setApplyStatus({ loading: false, success: true, error: "" });
-        setFormData({ name: "", email: "", resume_link: "", cover_note: "" });
+        setFormData({ name: user.name, email: user.email, resume_link: "", cover_note: "" });
         setTimeout(() => setShowModal(false), 2200);
       } else {
         setApplyStatus({
@@ -116,8 +124,37 @@ export default function ApplyModal({ job }: Props) {
                   soon.
                 </p>
               </div>
+            ) : !user ? (
+              <div className="bg-primary/5 border border-primary/10 p-8 rounded-xl text-center">
+                <svg
+                  className="w-16 h-16 text-primary/40 mx-auto mb-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+                <h3 className="text-xl font-bold text-text-dark mb-2">
+                  Login Required
+                </h3>
+                <p className="text-text-body mb-6 max-w-sm mx-auto">
+                  Please login as a candidate to apply for this position and track
+                  your application status.
+                </p>
+                <Link
+                  href="/login"
+                  className="bg-primary text-white px-8 py-3 rounded-lg font-bold hover:bg-primary-hover transition-colors inline-block"
+                >
+                  Login to Apply
+                </Link>
+              </div>
             ) : (
-              <form onSubmit={handleApply} className="space-y-5">
+              <form key={user?._id || "guest"} onSubmit={handleApply} className="space-y-5">
                 {applyStatus.error && (
                   <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm border border-red-200">
                     {applyStatus.error}
@@ -134,6 +171,7 @@ export default function ApplyModal({ job }: Props) {
                     required
                     value={formData.name}
                     onChange={handleChange}
+                    readOnly
                     placeholder="John Doe"
                     className="w-full border border-gray-200 p-3 rounded-md focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                   />
@@ -149,6 +187,7 @@ export default function ApplyModal({ job }: Props) {
                     required
                     value={formData.email}
                     onChange={handleChange}
+                    readOnly
                     placeholder="john@example.com"
                     className="w-full border border-gray-200 p-3 rounded-md focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                   />
